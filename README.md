@@ -13,7 +13,7 @@ Simple scripts to evaluate closed-source systems (ChatGPT, GPT4) and open-source
 
 To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting of harmful questions:
 - [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA) (1,960 harmful questions covering 10 topics and ~10 subtopics each)
-- [**DangerousQA**](https://arxiv.org/pdf/2212.08061.pdf) (200 harmful questions) 
+- [**DangerousQA**]([https://arxiv.org/pdf/2212.08061.pdf](https://github.com/SALT-NLP/chain-of-thought-bias/blob/main/data/dangerous-q/toxic_outs.json)) (200 harmful questions across 6 adjectives—racist, stereotypical, sexist, illegal, toxic, and harmful) 
 
 ### How to perform red-teaming
 - Step-1: Generate model outputs on harmful questions by providing a path to the question bank and red-teaming prompt.
