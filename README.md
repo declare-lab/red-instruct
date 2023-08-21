@@ -4,8 +4,16 @@
 
 📢 Training codes will be released soon. Stay tuned!
 
-## Red-Eval
+**As a part of our efforts to make LLMs safer for public use, we provide:**
+- **Code to evaluate LLM safety against Chain of Utterances (CoU) based prompts-referred to as Red-Eval benchmark**
+- **Code to perform safety alignment of Vicuna-7B on blue-red data from [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA)**
+
+## Red-Eval Benchmark
 Simple scripts to evaluate closed-source systems (ChatGPT, GPT4) and open-source LLMs on our benchmark red-eval.
+
+To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting of harmful questions:
+- [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA) (1,960 harmful questions covering 10 topics and ~10 subtopics each)
+- [**DangerousQA**](https://arxiv.org/pdf/2212.08061.pdf) (200 harmful questions) 
 
 ### How to perform red-teaming
 - Step-1: Generate model outputs on harmful questions by providing a path to the question bank and red-teaming prompt.
