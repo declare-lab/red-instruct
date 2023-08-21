@@ -16,6 +16,13 @@ To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting 
 - [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA) (1,960 harmful questions covering 10 topics and ~10 subtopics each)
 - [**DangerousQA**](https://github.com/SALT-NLP/chain-of-thought-bias/blob/main/data/dangerous-q/toxic_outs.json) (200 harmful questions across 6 adjectives—racist, stereotypical, sexist, illegal, toxic, and harmful) 
 
+### Installation
+```
+conda create --name redeval -c conda-forge python=3.11
+conda activate redeval
+pip install -r requirements.txt
+```
+
 ### How to perform red-teaming
 - **Step-0: Decide which prompt template you want to use for red-teaming.** As a part of our efforts, we provide a CoU-based prompt that is effective at breaking the safety guardrails of GPT4, ChatGPT, and open-source models.
   - [Chain of Utterances (CoU)](https://github.com/declare-lab/red-instruct/blob/main/red_prompts/cou.txt)
