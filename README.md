@@ -17,7 +17,7 @@ To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting 
 - [**DangerousQA**](https://github.com/SALT-NLP/chain-of-thought-bias/blob/main/data/dangerous-q/toxic_outs.json) (200 harmful questions across 6 adjectives—racist, stereotypical, sexist, illegal, toxic, and harmful) 
 
 ### How to perform red-teaming
-- **Step-0: Decide which prompt template you want to use for red-teaming.** As a part of our efforts, we provide a CoU-based prompt that is effective at breaking the safety guardrails of GPT4, ChatGPT, and open-source models.**
+- **Step-0: Decide which prompt template you want to use for red-teaming.** As a part of our efforts, we provide a CoU-based prompt that is effective at breaking the safety guardrails of GPT4, ChatGPT, and open-source models.
   - [Chain of Utterances (CoU)](https://github.com/declare-lab/red-instruct/blob/main/red_prompts/cou.txt)
   - [Chain of Thoughts (CoT)](https://github.com/declare-lab/red-instruct/blob/main/red_prompts/cot.txt)
   - [Standard prompt](https://github.com/declare-lab/red-instruct/blob/main/red_prompts/standard.txt)
