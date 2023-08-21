@@ -2,6 +2,8 @@
 
 [**Paper**](https://openreview.net/pdf?id=jkcHYEfPv3) | [**Github**](https://github.com/declare-lab/red-instruct) | [**Dataset**](https://huggingface.co/datasets/declare-lab/HarmfulQA) | [**Model**](https://huggingface.co/declare-lab/starling-7B)
 
+📢 Training codes will be released soon. Stay tuned!
+
 ## Red-Eval
 Simple scripts to evaluate closed-source systems (ChatGPT, GPT4) and open-source LLMs on our benchmark red-eval.
 
@@ -30,6 +32,3 @@ python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/
 ```
 python gpt4_as_judge.py --response_file "results/dangerousqa_gpt4_cou_clean.json" --save_path results
 ```
-
-
-📢 Training codes will be released soon. Stay tuned!
