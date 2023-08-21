@@ -64,3 +64,17 @@ python gpt4_as_judge.py --response_file results/dangerousqa_gpt4_cou.json --save
 |**Starling (Blue)** |     0.015      |     0.485    |      0.765      |     0.421     |       -        |      -        |       -        |       -       |
 |**Starling (Blue-Red)** |     0.050      |     0.570    |      0.855      |     0.492     |       -        |      -        |       -        |       -       |
 |     **Average**    |     0.116      |     0.479    |      0.830      |     0.471     |     0.010      |    0.016      |     0.67       |     0.232     |
+
+
+## Citation
+
+```bibtex
+@misc{bhardwaj2023redteaming,
+      title={Red-Teaming Large Language Models using Chain of Utterances for Safety-Alignment}, 
+      author={Rishabh Bhardwaj and Soujanya Poria},
+      year={2023},
+      eprint={2308.09662},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
