@@ -65,6 +65,7 @@ python gpt4_as_judge.py --response_file results/dangerousqa_gpt4_cou.json --save
 ```
 
 ### Results
+Attack Success Rate (ASR) of different red-teaming attempts.
 
 |                | **(DangerousQA)**   |   **(DangerousQA)** |  **(DangerousQA)**  |  **(DangerousQA)**  | **(HarmfulQA)** |  **(HarmfulQA)** | **(HarmfulQA)** |  **(HarmfulQA)** |
 |:--------------:|:------------------:|:------------:|:-----------------:|:------------:|:------------:|:------------:|:-----------------:|:------------:|
