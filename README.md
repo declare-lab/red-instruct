@@ -40,3 +40,20 @@ python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/
 ```
 python gpt4_as_judge.py --response_file "results/dangerousqa_gpt4_cou_clean.json" --save_path results
 ```
+
+### Results
+
+|                | **(DangerousQA)**   |   **(DangerousQA)** |  **(DangerousQA)**  |  **(DangerousQA)**  | **(HarmfulQA)** |  **(HarmfulQA)** | **(HarmfulQA)** |  **(HarmfulQA)** |
+|:--------------:|:------------------:|:------------:|:-----------------:|:------------:|:------------:|:------------:|:-----------------:|:------------:|
+|                | **Standard**   |   **CoT**   |  **RedEval**  |  **Average**  | **Standard**   |   **CoT**   |  **RedEval**  |  **Average**  |
+|     **GPT-4**     |        0         |       0      |      0.651      |     0.217     |       0        |      0.004     |      0.612      |     0.206     |
+|    **ChatGPT**    |        0         |     0.005    |      0.728      |     0.244     |     0.018      |    0.027      |      0.728      |     0.257     |
+|  **Vicuna-13B**   |     0.027      |     0.490    |      0.835      |     0.450     |       -        |      -        |       -        |       -       |
+|  **Vicuna-7B** |     0.025      |     0.532    |      0.875      |     0.477     |       -        |      -        |       -        |       -       |
+| **StableBeluga-13B** |     0.026      |     0.630    |      0.915      |     0.523     |       -        |      -        |       -        |       -       |
+| **StableBeluga-7B** |     0.102      |     0.755    |      0.915      |     0.590     |       -        |      -        |       -        |       -       |
+|**Vicuna-FT-7B**|     0.095      |     0.465    |      0.860      |     0.473     |       -        |      -        |       -        |       -       |
+| **Llama2-FT-7B** |     0.722      |     0.860    |      0.896      |     0.826     |       -        |      -        |       -        |       -       |
+|**Starling** |     0.015      |     0.485    |      0.765      |     0.421     |       -        |      -        |       -        |       -       |
+|**Starling** |     0.050      |     0.570    |      0.855      |     0.492     |       -        |      -        |       -        |       -       |
+|     **Average**    |     0.116      |     0.479    |      0.830      |     0.471     |     0.010      |    0.016      |     0.67       |     0.232     |
