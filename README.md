@@ -27,7 +27,7 @@ Closed-source models (GPT4 and ChatGPT):
   Open-source models:
   
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json
 ```
   For better readability, internal thoughts from responses can be cleaned by specifying "clean_thoughts" in the script:
 ```
