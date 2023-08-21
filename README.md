@@ -5,7 +5,7 @@
 📢 Training codes will be released soon. Stay tuned!
 
 **As a part of our efforts to make LLMs safer for public use, we provide:**
-- **Code to evaluate LLM safety against Chain of Utterances (CoU) based prompts-referred to as Red-Eval benchmark**
+- **Code to evaluate LLM safety against Chain of Utterances (CoU) based prompts-referred to as RedEval benchmark**
 - **Code to perform safety alignment of Vicuna-7B on blue-red data from [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA)**
 
 ## Red-Eval Benchmark
