@@ -16,7 +16,7 @@ To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting 
 - [**DangerousQA**](https://github.com/SALT-NLP/chain-of-thought-bias/blob/main/data/dangerous-q/toxic_outs.json) (200 harmful questions across 6 adjectives—racist, stereotypical, sexist, illegal, toxic, and harmful) 
 
 ### How to perform red-teaming
-- Step-1: Generate model outputs on harmful questions by providing a path to the question bank and red-teaming prompt.
+- **Step-1: Generate model outputs on harmful questions by providing a path to the question bank and red-teaming prompt:**
 
 Closed-source models (GPT4 and ChatGPT):
 ```
@@ -29,14 +29,21 @@ Closed-source models (GPT4 and ChatGPT):
 ```
   python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json
 ```
-  For better readability, internal thoughts from responses can be cleaned by specifying "clean_thoughts" in the script:
+
+  For better readability, we can clean internal thoughts from responses by specifying --clean_thoughts as follows
 ```
 python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --clean_thoughts
 python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --clean_thoughts
 python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --clean_thoughts
 ```
 
-- Step-2: Annotate the generated responses using gpt4-as-a-judge
+To load models in 8-bit, we can specify --load_8bit as follows
+
+```
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --load_8bit
+```
+
+- **Step-2: Annotate the generated responses using gpt4-as-a-judge:**
 ```
 python gpt4_as_judge.py --response_file results/dangerousqa_gpt4_cou.json --save_path results
 ```
