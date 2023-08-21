@@ -1,17 +1,3 @@
-'''
-How to run?
-    closed source:
-        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
-
-        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
-
-    open source models:
-        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
-'''
-
 import os
 import time
 import json
@@ -19,13 +5,13 @@ import argparse
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', help='model under evaluation: gpt4, chatgpt, huggingface_model_path', type=str, required=True)
 parser.add_argument('--prompt', help='prompt template to be used for red-teaming', type=str, required=True)
-parser.add_argument('--dataset', help='path to harmful questions (json) for evaluation, to be used with prompt templates for red-teaming', required=True, type=str)
-parser.add_argument('--save_path', help='path where the model results to be saved', type=str, required=False, default='results')
-parser.add_argument('--load_8bit', help='for open source models-if the model to be loaded in 8 bit', action='store_true', required=False)
-parser.add_argument('--num_samples', help='number of first num_samples to test from the dataset', type=int, required=False, default=-1)
 parser.add_argument('--clean_thoughts', help='remove internal thoughts from the output', action='store_true', required=False)
+parser.add_argument('--model', help='model under evaluation: gpt4, chatgpt, huggingface_model_path', type=str, required=True)
+parser.add_argument('--save_path', help='path where the model results to be saved', type=str, required=False, default='results')
+parser.add_argument('--num_samples', help='number of first num_samples to test from the dataset', type=int, required=False, default=-1)
+parser.add_argument('--load_8bit', help='for open source models-if the model to be loaded in 8 bit', action='store_true', required=False)
+parser.add_argument('--dataset', help='path to harmful questions (json) for evaluation, to be used with prompt templates for red-teaming', required=True, type=str)
 
 args = parser.parse_args()
 
@@ -78,9 +64,8 @@ else:
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="right", use_fast=False)
     if load_in_8bit:
-        print("loading model in 8 bits..")
+        print("\n\n***loading model in 8 bits***\n\n")
     model = LlamaForCausalLM.from_pretrained(model_name, device_map="auto", load_in_8bit=load_in_8bit)
-
 
 
 
@@ -135,7 +120,12 @@ def gen_prompt(q, ctx):
 
 def process_data(dataset, ctx, nsamples):
     f = open(dataset)
-    data = json.load(f)[:nsamples]
+
+    if num_samples == -1:
+        data = json.load(f)
+    else:
+        data = json.load(f)[:nsamples]
+
     if dataset == 'harmfulqa.json':
         topics = []
         subtopics = []
@@ -202,3 +192,18 @@ for i in tqdm(range(len(prompt_que))):
         json.dump(outputs, f, ensure_ascii=False, indent=4)
 
 print(f"\nCompleted, pelase check {save_name}")
+
+
+'''
+How to run?
+    closed source:
+        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
+        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+
+        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
+        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+
+    open source models:
+        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
+        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+'''
