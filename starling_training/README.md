@@ -11,6 +11,19 @@ pip install deepspeed
 pip install scikit-learn
 ```
 
+## Process data
+```
+import pickle as pk
+data1 = pk.load(open('./data/data_blue_finetune.pkl','rb'))
+data2 = pk.load(open('./data/data_helpful_finetune.pkl','rb'))
+data3 = pk.load(open('./data/data_sgpt_only.pkl','rb'))
+data_combined = data1+data2+data3
+
+random.shuffle(data_combined)
+with open("./data/data_combined.json", "w", encoding='utf-8') as f:
+    json.dump(data_combined, f, ensure_ascii=False, indent=4)
+```
+
 ## Train
 
 - Train the Vicuna-7B on Blue data from HarmfulQA mixed with equal amount of ShareGPT data
@@ -20,7 +33,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 deepspeed --num_gpus=4 fastchat/train/train_ft.py \
     --output_dir "./saved/starling/" \
     --deepspeed "deepspeed_configs/fp16_ft_7b.json" --fp16 True \
     --model_name_or_path "lmsys/vicuna-7b-v1.3" \
-    --data_path "data/data_hall_sgpt_combined.json" \
+    --data_path "./data/data_combined.json" \
     --per_device_train_batch_size 2 --per_device_eval_batch_size 4 --gradient_accumulation_steps 8 \
     --num_train_epochs 3 --evaluation_strategy "epoch" \
     --save_strategy "steps" --save_steps 200 --save_total_limit 20 \
