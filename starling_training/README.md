@@ -12,21 +12,14 @@ pip install scikit-learn
 ```
 
 ## Process data
-```
-import pickle as pk
-data1 = pk.load(open('./data/data_blue_finetune.pkl','rb'))
-data2 = pk.load(open('./data/data_helpful_finetune.pkl','rb'))
-data3 = pk.load(open('./data/data_sgpt_only.pkl','rb'))
-data_combined = data1+data2+data3
-
-random.shuffle(data_combined)
-with open("./data/data_combined.json", "w", encoding='utf-8') as f:
-    json.dump(data_combined, f, ensure_ascii=False, indent=4)
-```
 
 ## Train
+- Process data by combining blue + helpful + equal amount of ShareGPT
+```
+python process_data.py
+```
 
-- Train the Vicuna-7B on Blue data from HarmfulQA mixed with equal amount of ShareGPT data
+- Tune  Vicuna-7B
 ```
 CUDA_VISIBLE_DEVICES=0,1,2,3 deepspeed --num_gpus=4 fastchat/train/train_ft.py \
     --ddp_timeout=360000 \
@@ -42,7 +35,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 deepspeed --num_gpus=4 fastchat/train/train_ft.py \
     --gradient_checkpointing True --lazy_preprocess True --disable_tqdm False
 ```
 
-_Note: We closely follow [FastChat](https://github.com/lm-sys/FastChat) to train Starling on the Blue data of HarmfulQA._
+_Note: We adopt [FastChat](https://github.com/lm-sys/FastChat) to train Starling on the Blue data of HarmfulQA._
 
 ## Citation
 ```bibtex
