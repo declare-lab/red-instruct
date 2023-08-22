@@ -1,4 +1,5 @@
 import pickle as pk
+import random
 data1 = pk.load(open('./data/data_blue_finetune.pkl','rb'))
 data2 = pk.load(open('./data/data_helpful_finetune.pkl','rb'))
 data3 = pk.load(open('./data/data_sgpt_only.pkl','rb'))
