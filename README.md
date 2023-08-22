@@ -2,8 +2,6 @@
 
 [**Paper**](https://arxiv.org/abs/2308.09662) | [**Github**](https://github.com/declare-lab/red-instruct) | [**Dataset**](https://huggingface.co/datasets/declare-lab/HarmfulQA) | [**Model**](https://huggingface.co/declare-lab/starling-7B)
 
-📢 Training codes will be released soon. Stay tuned!
-
 **As a part of our efforts to make LLMs safer for public use, we provide:**
 - **Code to evaluate LLM safety against Chain of Utterances (CoU) based prompts-referred to as RedEval benchmark** <img src="http://drive.google.com/uc?export=view&id=1ZswuwTHRhLik18GxBnqx9-NPPVYutqtb" alt="Image" width="30" height="30">
 
