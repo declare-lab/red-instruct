@@ -57,6 +57,27 @@ if 'gpt' in model_name:
     except:
         raise Exception(f"\n\n\t\t\t[Sorry, please verify API key provided for {model_name} at {key_path}]")
 
+elif 'claude' in model_name:
+
+    from anthropic import Anthropic
+
+    try:
+        # API setting constants
+        API_MAX_RETRY = 5
+        API_RETRY_SLEEP = 10
+        API_ERROR_OUTPUT = "$ERROR$"
+
+        key_path = f'api_keys/{model_name}_api_key.json'
+        with open(key_path, 'r') as f:
+            keys = json.load(f)   
+
+        anthropic = Anthropic(api_key=keys['api_key'])
+
+    except:
+        raise Exception(f"\n\n\t\t\t[Sorry, please verify API key provided for {model_name} at {key_path}]")
+
+
+
 else:
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -69,8 +90,8 @@ else:
 
 
 
-##define chat completion function##
-def chat_completion(system, prompt):
+##define chat completion function for GPT##
+def chat_completion_gpt(system, prompt):
     for _ in range(API_MAX_RETRY):
         try:    
             response = openai.ChatCompletion.create(
@@ -93,7 +114,32 @@ def chat_completion(system, prompt):
             time.sleep(API_RETRY_SLEEP)
 
 
+##define chat completion function for Claude##
+def chat_completion_claude(system, prompt):
 
+    try_suffix = [" Let's think step by step:"," Let's think step by step.", " Let's think step by step:\n-", " Let's think step by step.\n-", ""]
+
+    for t in range(API_MAX_RETRY):
+        try:
+            full_prompt = f"{prompt}{try_suffix[t]}"
+            print(f"Retry:{t}\n{full_prompt}")
+            completion = anthropic.completions.create(
+                model=model_name,
+                max_tokens_to_sample=300,
+                prompt=full_prompt,
+            )
+            response = completion.completion
+            if response == "" or "Human" in response:
+                continue
+                
+            return response
+
+        except Exception as e:
+            print(type(e), e)
+            print("trying again")
+            time.sleep(API_RETRY_SLEEP)
+
+            return response
 
 ##process data##
 def clean_thoughts_(response):
@@ -126,7 +172,7 @@ def process_data(dataset, ctx, nsamples):
     else:
         data = json.load(f)[:nsamples]
 
-    if dataset == 'harmfulqa.json':
+    if 'harmful' in dataset:
         topics = []
         subtopics = []
         prompt_que = []
@@ -135,17 +181,17 @@ def process_data(dataset, ctx, nsamples):
             for subtopic in data[topic].keys():
                 for q in data[topic][subtopic]:
                     orig_que.append(q)
-                    prompt_que.append(gen_prompt(q))
-                    topics.append(t)
-                    subtopics.append(st)
+                    prompt_que.append(gen_prompt(q, ctx))
+                    topics.append(topic)
+                    subtopics.append(subtopic)
     else:
         prompt_que = [gen_prompt(q, ctx) for q in data]
         orig_que = data
 
-    return prompt_que, orig_que
+    return prompt_que, orig_que, topics, subtopics
 
 context = get_context(args.prompt)
-prompt_que, orig_que = process_data(dataset, context, num_samples)
+prompt_que, orig_que, topics, subtopics = process_data(dataset, context, num_samples)
 
 
 ##generate responses##
@@ -169,7 +215,11 @@ for i in tqdm(range(len(prompt_que))):
     inputs = prompt_que[i]
 
     if 'gpt' in model_name:
-        response = chat_completion(system=system_message, prompt=inputs)
+        response = chat_completion_gpt(system=system_message, prompt=inputs)
+
+    elif 'claude' in model_name:
+        response = chat_completion_claude(system=system_message, prompt=inputs)
+
     else:
         inputs = tokenizer([prompt_que[i]], return_tensors="pt", truncation=True, padding=True).to("cuda")
         generated_ids = model.generate(input_ids=inputs['input_ids'], attention_mask=inputs['attention_mask'], max_new_tokens=500)
@@ -181,7 +231,7 @@ for i in tqdm(range(len(prompt_que))):
     question = orig_que[i]
     question2 = prompt_que[i]
     #
-    if dataset == 'harmfulqa.json':
+    if 'harmful' in dataset:
         response = [{'prompt':question, 'response':response.replace(question2,"").strip(), 'topic':topics[i], 'subtopic': subtopics[i]}]
     else:
         response = [{'prompt':question, 'response':response.replace(question2,"").strip()}]
@@ -197,13 +247,17 @@ print(f"\nCompleted, pelase check {save_name}")
 '''
 How to run?
     closed source:
-        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10
+        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
 
-        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10
+        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+
+        python generate_responses.py --model 'claude-instant-1' --prompt 'red_prompts/cotclaude.txt' --dataset harmful_questions/dangerousqa.json
+        python generate_responses.py --model "claude-1.3" --prompt 'red_prompts/cotclaude.txt' --dataset harmful_questions/dangerousqa.json
+        python generate_responses.py --model "claude-2" --prompt 'red_prompts/cotclaude.txt' --dataset harmful_questions/dangerousqa.json
 
     open source models:
-        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset hamrful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
+        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10
+        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
 '''
