@@ -172,7 +172,7 @@ def process_data(dataset, ctx, nsamples):
     else:
         data = json.load(f)[:nsamples]
 
-    if 'harmful' in dataset:
+    if 'harmfulq' in dataset:
         topics = []
         subtopics = []
         prompt_que = []
@@ -184,11 +184,14 @@ def process_data(dataset, ctx, nsamples):
                     prompt_que.append(gen_prompt(q, ctx))
                     topics.append(topic)
                     subtopics.append(subtopic)
+
+        return prompt_que, orig_que, topics, subtopics
+
     else:
         prompt_que = [gen_prompt(q, ctx) for q in data]
         orig_que = data
 
-    return prompt_que, orig_que, topics, subtopics
+        return prompt_que, orig_que, [], []
 
 context = get_context(args.prompt)
 prompt_que, orig_que, topics, subtopics = process_data(dataset, context, num_samples)
@@ -231,7 +234,7 @@ for i in tqdm(range(len(prompt_que))):
     question = orig_que[i]
     question2 = prompt_que[i]
     #
-    if 'harmful' in dataset:
+    if 'harmfulq' in dataset:
         response = [{'prompt':question, 'response':response.replace(question2,"").strip(), 'topic':topics[i], 'subtopic': subtopics[i]}]
     else:
         response = [{'prompt':question, 'response':response.replace(question2,"").strip()}]
