@@ -34,27 +34,27 @@ pip install -r requirements.txt
 
 Closed-source models (GPT4 and ChatGPT):
 ```
-  python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json
-  python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json
+  python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json
+  python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json
 ```
 
   Open-source models:
   
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json
 ```
 
   For better readability, we can clean internal thoughts from responses by specifying --clean_thoughts as follows
 ```
-python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --clean_thoughts
-python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --clean_thoughts
-python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --clean_thoughts
+python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts
+python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts
+python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts
 ```
 
 To load models in 8-bit, we can specify --load_8bit as follows
 
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset hamrful_questions/dangerousqa.json --load_8bit
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --load_8bit
 ```
 
 - **Step-2: Annotate the generated responses using gpt4-as-a-judge:**
