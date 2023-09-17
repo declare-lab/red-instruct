@@ -167,10 +167,7 @@ def gen_prompt(q, ctx):
 def process_data(dataset, ctx, nsamples):
     f = open(dataset)
 
-    if num_samples == -1:
-        data = json.load(f)
-    else:
-        data = json.load(f)[:nsamples]
+    data = json.load(f)
 
     if 'harmfulq' in dataset:
         topics = []
@@ -185,13 +182,16 @@ def process_data(dataset, ctx, nsamples):
                     topics.append(topic)
                     subtopics.append(subtopic)
 
-        return prompt_que, orig_que, topics, subtopics
-
     else:
         prompt_que = [gen_prompt(q, ctx) for q in data]
         orig_que = data
+        topics, subtopics = [], []
 
-        return prompt_que, orig_que, [], []
+    if num_samples == -1:
+        nsamples = len(prompt_que)
+
+    return prompt_que[:num_samples], orig_que[:num_samples], topics[:num_samples], subtopics[:num_samples]
+
 
 context = get_context(args.prompt)
 prompt_que, orig_que, topics, subtopics = process_data(dataset, context, num_samples)
@@ -224,20 +224,23 @@ for i in tqdm(range(len(prompt_que))):
         response = chat_completion_claude(system=system_message, prompt=inputs)
 
     else:
-        inputs = tokenizer([prompt_que[i]], return_tensors="pt", truncation=True, padding=True).to("cuda")
+        inputs = tokenizer([inputs], return_tensors="pt", truncation=True, padding=True).to("cuda")
         generated_ids = model.generate(input_ids=inputs['input_ids'], attention_mask=inputs['attention_mask'], max_new_tokens=500)
         response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+
+    question = orig_que[i]
+    question2 = prompt_que[i]
+    
+    #cleaning response
+    response = response.replace(question2,"").strip()
 
     if clean_thoughts:
         response = clean_thoughts_(response)
 
-    question = orig_que[i]
-    question2 = prompt_que[i]
-    #
     if 'harmfulq' in dataset:
-        response = [{'prompt':question, 'response':response.replace(question2,"").strip(), 'topic':topics[i], 'subtopic': subtopics[i]}]
+        response = [{'prompt':question, 'response':response, 'topic':topics[i], 'subtopic': subtopics[i]}]
     else:
-        response = [{'prompt':question, 'response':response.replace(question2,"").strip()}]
+        response = [{'prompt':question, 'response':response}]
 
     outputs += response
 

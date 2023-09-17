@@ -57,6 +57,13 @@ To load models in 8-bit, we can specify --load_8bit as follows
   python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --load_8bit
 ```
 
+To run on a subset of the harmful questions, we can specify --num_samples as follows
+
+```
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --num_samples 10
+```
+
+
 - **Step-2: Annotate the generated responses using gpt4-as-a-judge:**
 ```
 python gpt4_as_judge.py --response_file results/dangerousqa_gpt4_cou.json --save_path results
