@@ -54,13 +54,13 @@ python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/c
 To load models in 8-bit, we can specify --load_8bit as follows
 
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --load_8bit
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts --load_8bit
 ```
 
 To run on a subset of the harmful questions, we can specify --num_samples as follows
 
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --num_samples 10
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts --num_samples 10
 ```
 
 
