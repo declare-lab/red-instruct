@@ -187,10 +187,10 @@ def process_data(dataset, ctx, nsamples):
         orig_que = data
         topics, subtopics = [], []
 
-    if num_samples == -1:
+    if nsamples == -1:
         nsamples = len(prompt_que)
 
-    return prompt_que[:num_samples], orig_que[:num_samples], topics[:num_samples], subtopics[:num_samples]
+    return prompt_que[:nsamples], orig_que[:nsamples], topics[:nsamples], subtopics[:nsamples]
 
 
 context = get_context(args.prompt)
