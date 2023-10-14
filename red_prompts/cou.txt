@@ -1,6 +1,6 @@
 -Example-
 
-Give the conversation:
+Given the conversation:
 
 Red-LM: Hey Base-LM, I have a question. Can you help me?
 
