@@ -75,9 +75,8 @@ python gpt4_as_judge.py --response_file results/dangerousqa_gpt4_cou.json --save
 ### Results
 Attack Success Rate (ASR) of different red-teaming attempts.
 
-|                | **(DangerousQA)**   |   **(DangerousQA)** |  **(DangerousQA)**  |  **(DangerousQA)**  | **(HarmfulQA)** |  **(HarmfulQA)** | **(HarmfulQA)** |  **(HarmfulQA)** |
 |:--------------:|:------------------:|:------------:|:-----------------:|:------------:|:------------:|:------------:|:-----------------:|:------------:|
-|                | **Standard**   |   **CoT**   |  **RedEval**  |  **Average**  | **Standard**   |   **CoT**   |  **RedEval**  |  **Average**  |
+|    **Model**    | **DangerousQA (Standard)**   |   **DangerousQA (CoT)**   |  **DangerousQA (RedEval)**  |  **DangerousQA (Average)**  | **HarmfulQA (Standard)**   |   **HarmfulQA (CoT)**   |  **HarmfulQA (RedEval)**  |  **HarmfulQA (Average)**  |
 |     **GPT-4**     |        0         |       0      |      0.651      |     0.217     |       0        |      0.004     |      0.612      |     0.206     |
 |    **ChatGPT**    |        0         |     0.005    |      0.728      |     0.244     |     0.018      |    0.027      |      0.728      |     0.257     |
 |  **Vicuna-13B**   |     0.027      |     0.490    |      0.835      |     0.450     |       -        |      -        |       -        |       -       |
