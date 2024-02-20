@@ -4,6 +4,7 @@
 
 
 > 📣 Update 2/02/24: Introducing Resta: ** Safety Re-alignment of Language Models **. [**Paper**](https://arxiv.org/abs/2402.11746) [**Github**](https://github.com/declare-lab/resta)
+
 > 📣 Update 26/10/23: Introducing our new red-teaming efforts: **Language Model Unalignment**. [**Link**](https://arxiv.org/pdf/2310.14303.pdf)
 
 **As a part of our efforts to make LLMs safer for public use, we provide:**
