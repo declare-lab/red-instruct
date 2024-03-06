@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--prompt', help='prompt template to be used for red-teaming', type=str, required=True)
-parser.add_argument('--clean_thoughts', help='remove internal thoughts from the output', action='store_true', required=False)
+parser.add_argument('--keep_thoughts', help='remove internal thoughts from the output', action='store_true', required=False)
 parser.add_argument('--model', help='model under evaluation: gpt4, chatgpt, huggingface_model_path', type=str, required=True)
 parser.add_argument('--save_path', help='path where the model results to be saved', type=str, required=False, default='results')
 parser.add_argument('--num_samples', help='number of first num_samples to test from the dataset', type=int, required=False, default=-1)
@@ -20,9 +20,8 @@ model_name = args.model
 save_path = args.save_path
 load_in_8bit = args.load_8bit
 num_samples = args.num_samples
-clean_thoughts = args.clean_thoughts
+clean_thoughts = not args.keep_thoughts
 prompt = args.prompt
-
 
 print(f"\n\nconfiguration")
 print(f"*{'-'*10}*")
@@ -32,6 +31,8 @@ for arg in vars(args):
 
 print(f"*{'-'*10}*\n\n")
 
+
+tokenizer = None
 
 ##setting up model##
 if 'gpt' in model_name:
@@ -54,8 +55,10 @@ if 'gpt' in model_name:
         openai.api_key=keys['api_key']
         model_engine = keys['model_engine']
         model_family = keys['model_family']
+
     except:
         raise Exception(f"\n\n\t\t\t[Sorry, please verify API key provided for {model_name} at {key_path}]")
+
 
 elif 'claude' in model_name:
 
@@ -67,7 +70,7 @@ elif 'claude' in model_name:
         API_RETRY_SLEEP = 10
         API_ERROR_OUTPUT = "$ERROR$"
 
-        key_path = f'api_keys/{model_name}_api_key.json'
+        key_path = f'api_keys/claude_api_key.json'
         with open(key_path, 'r') as f:
             keys = json.load(f)   
 
@@ -76,18 +79,20 @@ elif 'claude' in model_name:
     except:
         raise Exception(f"\n\n\t\t\t[Sorry, please verify API key provided for {model_name} at {key_path}]")
 
-
-
 else:
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from transformers import LlamaForCausalLM, LlamaTokenizer, AutoModelForCausalLM
+    from transformers import AutoModelForCausalLM
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="right", use_fast=False)
+
+    if not tokenizer.pad_token:
+        tokenizer.pad_token = tokenizer.unk_token
+
     if load_in_8bit:
         print("\n\n***loading model in 8 bits***\n\n")
-    model = LlamaForCausalLM.from_pretrained(model_name, device_map="auto", load_in_8bit=load_in_8bit)
-
+        
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", load_in_8bit=load_in_8bit)
 
 
 ##define chat completion function for GPT##
@@ -117,19 +122,25 @@ def chat_completion_gpt(system, prompt):
 ##define chat completion function for Claude##
 def chat_completion_claude(system, prompt):
 
-    try_suffix = [" Let's think step by step:"," Let's think step by step.", " Let's think step by step:\n-", " Let's think step by step.\n-", ""]
+    try_suffix = [" "," Let's think step by step:"," Let's think step by step.", " Let's think step by step:\n-", " Let's think step by step.\n-"]
 
     for t in range(API_MAX_RETRY):
         try:
             full_prompt = f"{prompt}{try_suffix[t]}"
+
             print(f"Retry:{t}\n{full_prompt}")
-            completion = anthropic.completions.create(
+
+            completion = anthropic.messages.create(
                 model=model_name,
-                max_tokens_to_sample=300,
-                prompt=full_prompt,
+                max_tokens=1000,
+                messages=[
+                            {"role": "user", "content": full_prompt}
+                        ],
             )
-            response = completion.completion
-            if response == "" or "Human" in response:
+
+            response = completion.content[0].text
+
+            if response == "":
                 continue
                 
             return response
@@ -141,8 +152,9 @@ def chat_completion_claude(system, prompt):
 
             return response
 
+
 ##process data##
-def clean_thoughts_(response):
+def clean_thought(response):
 
     if "(Internal thought:" in response:
         if ')' in response:
@@ -160,9 +172,17 @@ def get_context(file_name):
     f = f.read()
     return f
 
+
 def gen_prompt(q, ctx):
     prompt = ctx.replace('<question>', q.strip())
+
+    #open-source models, apply chat template
+    if tokenizer:
+        prompt = [{"role": "user", "content": prompt}]
+        prompt = tokenizer.apply_chat_template(prompt, tokenize=False)
+
     return prompt
+
 
 def process_data(dataset, ctx, nsamples):
     f = open(dataset)
@@ -203,9 +223,9 @@ if not os.path.exists(save_path):
 
 #save file name
 if clean_thoughts:
-    save_name = f'{save_path}/{dataset.split("/")[-1].replace(".json","")}_{model_name.split("/")[-1]}_{prompt.split("/")[-1].replace(".txt","")}_clean.json'
-else:
     save_name = f'{save_path}/{dataset.split("/")[-1].replace(".json","")}_{model_name.split("/")[-1]}_{prompt.split("/")[-1].replace(".txt","")}.json'
+else:
+    save_name = f'{save_path}/{dataset.split("/")[-1].replace(".json","")}_{model_name.split("/")[-1]}_{prompt.split("/")[-1].replace(".txt","")}_w_thoughts.json'
 
 
 outputs = []
@@ -224,18 +244,21 @@ for i in tqdm(range(len(prompt_que))):
         response = chat_completion_claude(system=system_message, prompt=inputs)
 
     else:
-        inputs = tokenizer([inputs], return_tensors="pt", truncation=True, padding=True).to("cuda")
+        inputs = tokenizer([inputs], return_tensors="pt", truncation=False, padding=True, add_special_tokens=False).to("cuda")
         generated_ids = model.generate(input_ids=inputs['input_ids'], attention_mask=inputs['attention_mask'], max_new_tokens=500)
-        response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+        response = tokenizer.batch_decode(generated_ids, skip_special_tokens=False)[0]
 
     question = orig_que[i]
     question2 = prompt_que[i]
     
     #cleaning response
+    #breakpoint()
+    response = response.replace("<s> [INST]", "<s>[INST]")
+    question2 = question2.replace("<s> [INST]", "<s>[INST]")
     response = response.replace(question2,"").strip()
 
     if clean_thoughts:
-        response = clean_thoughts_(response)
+        response = clean_thought(response)
 
     if 'harmfulq' in dataset:
         response = [{'prompt':question, 'response':response, 'topic':topics[i], 'subtopic': subtopics[i]}]
@@ -248,22 +271,3 @@ for i in tqdm(range(len(prompt_que))):
         json.dump(outputs, f, ensure_ascii=False, indent=4)
 
 print(f"\nCompleted, pelase check {save_name}")
-
-
-'''
-How to run?
-    closed source:
-        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model 'chatgpt' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
-
-        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model 'gpt4' --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
-
-        python generate_responses.py --model 'claude-instant-1' --prompt 'red_prompts/cotclaude.txt' --dataset harmful_questions/dangerousqa.json
-        python generate_responses.py --model "claude-1.3" --prompt 'red_prompts/cotclaude.txt' --dataset harmful_questions/dangerousqa.json
-        python generate_responses.py --model "claude-2" --prompt 'red_prompts/cotclaude.txt' --dataset harmful_questions/dangerousqa.json
-
-    open source models:
-        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10
-        python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt 'red_prompts/cou.txt' --dataset harmful_questions/dangerousqa.json --num_samples 10 --clean_thoughts
-'''

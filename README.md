@@ -24,6 +24,9 @@ To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting 
 conda create --name redeval -c conda-forge python=3.11
 conda activate redeval
 pip install -r requirements.txt
+conda install sentencepiece
+
+Store you API keys in api_keys directory! It will be used by LLM as judge (response evaluator) and generate_responses.py for closed-source models.
 ```
 
 ### How to perform red-teaming
@@ -37,35 +40,42 @@ pip install -r requirements.txt
     
 - **Step-1: Generate model outputs on harmful questions by providing a path to the question bank and red-teaming prompt:**
 
-Closed-source models (GPT4 and ChatGPT):
+  Closed-source models:
 ```
-  python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json
-  python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json
+  #OpenAI
+  python generate_responses.py --model "gpt4" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+  python generate_responses.py --model "chatgpt" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+
+  #Claude Models
+  python generate_responses.py --model "claude-3-opus-20240229" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+  python generate_responses.py --model "claude-3-sonnet-20240229" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+  python generate_responses.py --model "claude-2.1" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+  python generate_responses.py --model "claude-2.0" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json 
 ```
 
   Open-source models:
-  
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json
+  #Llama-2
+  python generate_responses.py --model "meta-llama/Llama-2-7b-chat-hf" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+
+  #Mistral
+  python generate_responses.py --model "mistralai/Mistral-7B-Instruct-v0.2" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
+
+  #Vicuna
+  python generate_responses.py --model "lmsys/vicuna-7b-v1.3" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json
 ```
 
-  For better readability, we can clean internal thoughts from responses by specifying --clean_thoughts as follows
-```
-python generate_responses.py --model gpt4 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts
-python generate_responses.py --model chatgpt --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts
-python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts
-```
 
 To load models in 8-bit, we can specify --load_8bit as follows
 
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts --load_8bit
+  python generate_responses.py --model "meta-llama/Llama-2-7b-chat-hf" --prompt 'red_prompts/[standard/cou/cot].txt' --dataset harmful_questions/dangerousqa.json --load_8bit
 ```
 
 To run on a subset of the harmful questions, we can specify --num_samples as follows
 
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --clean_thoughts --num_samples 10
+  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --num_samples 10
 ```
 
 
