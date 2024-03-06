@@ -10,7 +10,7 @@
 **As a part of our efforts to make LLMs safer for public use, we provide:**
 - **Code to evaluate LLM safety against Chain of Utterances (CoU) based prompts-referred to as RedEval benchmark** <img src="https://github.com/declare-lab/red-instruct/assets/32847115/5678d7d7-5a0c-4d07-b600-1029aa58dbdc" alt="Image" width="30" height="30">
 
-- **Code to perform safety alignment of Vicuna-7B on [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA), with this we obtain a safer version of Vicuna which is more robust against RedEval. Please check out our [**Starling**](https://huggingface.co/declare-lab/starling-7B)<img src="https://declare-lab.net/assets/images/logos/starling-final.png" alt="Image" width="30" height="40">**
+- **Code to perform safety alignment of Vicuna-7B on [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA), with this we obtain a safer version of Vicuna which is more robust against RedEval. Please check out our [**Starling**](https://huggingface.co/declare-lab/starling-7B)**.
 
 ## Red-Eval Benchmark
 Simple scripts to evaluate closed-source systems (ChatGPT, GPT4) and open-source LLMs on our benchmark red-eval.
