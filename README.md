@@ -113,4 +113,13 @@ Attack Success Rate (ASR) of different red-teaming attempts.
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
+
+@misc{bhardwaj2024language,
+      title={Language Models are Homer Simpson! Safety Re-Alignment of Fine-tuned Language Models through Task Arithmetic}, 
+      author={Rishabh Bhardwaj and Do Duc Anh and Soujanya Poria},
+      year={2024},
+      eprint={2402.11746},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
 ```
