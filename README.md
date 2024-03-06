@@ -26,7 +26,7 @@ conda activate redeval
 pip install -r requirements.txt
 conda install sentencepiece
 
-Store you API keys in api_keys directory! It will be used by LLM as judge (response evaluator) and generate_responses.py for closed-source models.
+Store your API keys in api_keys directory! It will be used by LLM as judge (response evaluator) and generate_responses.py for closed-source models.
 ```
 
 ### How to perform red-teaming
@@ -69,13 +69,13 @@ Store you API keys in api_keys directory! It will be used by LLM as judge (respo
 To load models in 8-bit, we can specify --load_8bit as follows
 
 ```
-  python generate_responses.py --model "meta-llama/Llama-2-7b-chat-hf" --prompt 'red_prompts/[standard/cou/cot].txt' --dataset harmful_questions/dangerousqa.json --load_8bit
+  python generate_responses.py --model "meta-llama/Llama-2-7b-chat-hf" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json --load_8bit
 ```
 
 To run on a subset of the harmful questions, we can specify --num_samples as follows
 
 ```
-  python generate_responses.py --model lmsys/vicuna-7b-v1.3 --prompt red_prompts/cou.txt --dataset harmful_questions/dangerousqa.json --num_samples 10
+  python generate_responses.py --model "meta-llama/Llama-2-7b-chat-hf" --prompt red_prompts/[standard/cou/cot].txt --dataset harmful_questions/dangerousqa.json --num_samples 10
 ```
 
 
