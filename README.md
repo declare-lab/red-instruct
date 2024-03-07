@@ -3,7 +3,7 @@
 [**Paper**](https://arxiv.org/abs/2308.09662) | [**Github**](https://github.com/declare-lab/red-instruct) | [**Dataset**](https://huggingface.co/datasets/declare-lab/HarmfulQA) | [**Model**](https://huggingface.co/declare-lab/starling-7B)
 
 
-> 📣 Update 2/02/24: Introducing Resta: **Safety Re-alignment of Language Models**. [**Paper**](https://arxiv.org/abs/2402.11746) [**Github**](https://github.com/declare-lab/resta)
+> 📣 Update 2/02/24: Introducing Resta: **Safety Re-alignment of Language Models**. [**Paper**](https://arxiv.org/abs/2402.11746) [**Github**](https://github.com/declare-lab/resta) [**Dataset**](https://huggingface.co/datasets/declare-lab/CategoricalHarmfulQA)
 
 > 📣 Update 26/10/23: Introducing our new red-teaming efforts: **Language Model Unalignment**. [**Link**](https://arxiv.org/pdf/2310.14303.pdf)
 
