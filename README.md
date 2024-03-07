@@ -19,7 +19,7 @@ To compute Attack Success Rate (ASR) Red-Eval uses two question-bank consisting 
 - [**HarmfulQA**](https://huggingface.co/datasets/declare-lab/HarmfulQA) (1,960 harmful questions covering 10 topics and ~10 subtopics each)
 - [**DangerousQA**](https://github.com/SALT-NLP/chain-of-thought-bias/blob/main/data/dangerous-q/toxic_outs.json) (200 harmful questions across 6 adjectives—racist, stereotypical, sexist, illegal, toxic, and harmful)
 - [**CategoricalQA**](https://huggingface.co/datasets/declare-lab/CategoricalHarmfulQA) (11 categories of harm, each with 5 sub-categories. Available in English, Chinese, and Vietnamese)
-- [**AdversarialQA**](https://github.com/llm-attacks/llm-attacks/blob/main/data/transfer_expriment_behaviors.csv)
+- [**AdversarialQA**](https://github.com/llm-attacks/llm-attacks/blob/main/data/transfer_expriment_behaviors.csv) (a set of 500 instructions to tease out harmful behaviors from the model)
 
 ### Installation
 ```
